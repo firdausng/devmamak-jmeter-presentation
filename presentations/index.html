@@ -1,0 +1,632 @@
+<!doctype html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+	<title>Load Testing with JMeter</title>
+
+	<link rel="stylesheet" href="../css/reveal.css">
+	<link rel="stylesheet" href="../css/theme/league.css">
+
+	<!-- Theme used for syntax highlighting of code -->
+	<link rel="stylesheet" href="../lib/css/zenburn.css">
+
+	<style>
+		.slides h2 .avatar {
+			height: 80px;
+			vertical-align: middle;
+		}
+
+		.reveal .slides section img {
+			border: none;
+		}
+
+		.reveal .small {
+			font-size: 75%;
+		}
+	</style>
+
+	<!-- Printing and PDF exports -->
+	<script>
+		var link = document.createElement('link');
+		link.rel = 'stylesheet';
+		link.type = 'text/css';
+		link.href = window.location.search.match(/print-pdf/gi) ? '../css/print/pdf.css' : '../css/print/paper.css';
+		document.getElementsByTagName('head')[0].appendChild(link);
+	</script>
+</head>
+
+<body>
+	<div class="reveal">
+		<div class="slides">
+
+			<section>
+				<h1>Load Testing with JMeter</h1>
+				<p>
+					<small>Created by <a href="#">Firdaus Kamaruddin</a></small>
+				</p>
+			</section>
+			<section>
+				<h2>Outline</h2>
+				<ol>
+					<li class="fragment">What is JMeter</li>
+					<li class="fragment">Getting Started</li>
+					<li class="fragment">Basic Tests</li>
+					<li class="fragment">Testing Overview</li>
+					<li class="fragment">Test Design</li>
+					<li class="fragment">Advanced Topics</li>
+					<li class="fragment">Extending JMeter</li>
+					<li class="fragment">Further Reading</li>
+				</ol>
+			</section>
+			<section>
+				<section>
+					<h2>Apache JMeter</h2>
+					<p class="fragment">
+						<mark>JMeter is not a browser</mark>
+					</p>
+					<ul class="fragment">
+						<li><a>Web - HTTP, HTTPS (Java, NodeJS, PHP, ASP.NET, …)</a></li>
+						<li><a>SOAP / REST Webservices</a></li>
+						<li>FTP</li>
+						<li><a>Database via JDBC</a></li>
+						<li>LDAP</li>
+						<li><a>Message-oriented middleware (MOM) via JMS</a></li>
+						<li>Mail - SMTP(S), POP3(S) and IMAP(S)</li>
+						<li>TCP</li>
+						<li><a>Java Objects</a></li>
+					</ul>
+
+					<aside class="notes">
+						<p>jmeter works at protocol level. As far as web-services and remote services are concerned, JMeter looks like a browser
+							(or rather, multiple browsers); however JMeter does not perform all the actions supported by browsers. In particular,
+							JMeter does not execute the Javascript found in HTML pages. Nor does it render the HTML pages as a browser does (it's
+							possible to view the response as HTML etc., but the timings are not included in any samples, and only one sample in
+							one thread is ever displayed at a time).</p>
+						<ul>
+							<li>Full featured Test IDE that allows fast Test Plan recording (from Browsers or native applications), building and debugging.</li>
+							<li>Command-line mode (Non GUI / headless mode) to load test from any Java compatible OS (Linux, Windows, Mac OSX, …)</li>
+							<li>A complete and ready to present dynamic HTML report</li>
+							<li>Highly Extensible core:</li>
+							<li>JMeter may be used for Performance, Load, and Stress testing. Jmeter also can be used for API testing why custom code?
+								because ajax, weird jms configuration</li>
+						</ul>
+					</aside>
+				</section>
+				<section>
+					<p>
+						<a href="http://geekandpoke.typepad.com/geekandpoke/2009/03/stress-test.html"><img style="height: 800px" src="http://geekandpoke.typepad.com/.a/6a00d8341d3df553ef01116901f637970c-800wi" alt="Cartoon"></a>
+					</p>
+				</section>
+
+				<section>
+					<h2>Apache JMeter</h2>
+					<h3>Features</h3>
+					<ul>
+						<li>Multithreaded</li>
+						<li>Distributed</li>
+						<li>Integrated recording</li>
+						<li>Error handling</li>
+						<li>Timing & Scheduling</li>
+						<li>Extensible</li>
+						<li>Scriptable - command line</li>
+						<li>extensive report capability</li>
+					</ul>
+
+					<aside class="notes">
+						Why JMeter? Why not build something?<br> I see JMeter as a pluggable thread-management platform. The core feature is
+						its ability to spawn and synchronize threads, including the recording of data they generate. JMeter makes it easy to
+						multithread requests, collaborate across multiple machines, record results in combination across all testing nodes,
+						and it handles errors gracefully. Also, as you are about to see, getting started with JMeter is not that hard.
+					</aside>
+				</section>
+			</section>
+			<section>
+				<h2>Getting Started</h2>
+				<ul>
+					<li>Download <a href="http://jmeter.apache.org/">JMeter</a></li>
+					<li>Extract folder</li>
+					<li>Run bin/jmeter.sh or bin/jmeter.bat</li>
+				</ul>
+				<p><img data-src="../img/basic_jmeter.jpg" alt="Jmeter Gui"></p>
+				<aside class="notes">
+					Download (binary) of JMeter is a ZIP or TAR.GZ containing a single folder.
+				</aside>
+			</section>
+			<section>
+				<h2>Simple Test</h2>
+				<ul>
+					<li>Thread Group (test case)</li>
+					<li>Sampler (step)</li>
+					<li>Listener (reporter)</li>
+				</ul>
+			</section>
+			<section>
+				<h2>Basic HTTP Test</h2>
+				<ul>
+					<li>Thread Group</li>
+					<li>HTTP Request Sampler</li>
+					<ul>
+						<li>Timer</li>
+						<li>Pre sampler action</li>
+						<li>Post sampler action</li>
+					</ul>
+					<li>Summary Report Listener</li>
+				</ul>
+			</section>
+			<section>
+				<h2>Basic JDBC Test</h2>
+				<ul>
+					<li>JDBC Connection Configuration</li>
+					<li>JDBC driver jar</li>
+					<li>Thread Group</li>
+					<li>JDBC Request Sampler</li>
+					<li>Summary Report Listener</li>
+				</ul>
+
+				<aside class="notes">
+					Before running a JDBC test you'll need to install the JDBC Driver JAR. To do this, simply copy the JAR into the /lib/ folder
+					of JMeter. Alternatively, you may modify the
+					<code>user.classpath</code> in <b>jmeter.properties</b> to include the location of your JDBC Driver JAR.
+				</aside>
+			</section>
+			<section>
+				<section>
+					<h2>Report</h2>
+					<ul>
+						<li>Raw result (JTL)
+							<ul>
+								<li>xml</li>
+								<li>csv</li>
+							</ul>
+						</li>
+						<li>Listener
+							<ul>
+								<li>Graph</li>
+								<li>detail sampler execution result</li>
+								<li>save result to jtl/csv/xml format</li>
+							</ul>
+						</li>
+					</ul>
+					<aside class="notes">
+						<ul>
+							<li>default format is jtl</li>
+							<li>can be converted to xml or csv format</li>
+							<li>listerner is used to capture raw result</li>
+						</ul>
+					</aside>
+				</section>
+				<section>
+					<h2>CSV format</h2>
+					<pre><code data-trim data-noescape>
+								timeStamp,elapsed,label,responseCode,responseMessage,threadName,success,failureMessage,bytes,grpThreads,allThreads,Latency,SampleCount,ErrorCount,Hostname
+								1503030318170,2362,24 /,200,OK,Thread Group 1-1,true,,4844,3,3,811,1,0,KULMBW-NW70248
+								1503030318167,2362,001 go to adsight,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group 1-1,true,,4844,3,3,811,1,0,KULMBW-NW70248
+								1503030320534,320,29 /saml/login,200,OK,Thread Group 1-1,true,,5136,3,3,320,1,0,KULMBW-NW70248
+								1503030319176,2107,24 /,200,OK,Thread Group 1-2,true,,4844,4,4,579,1,0,KULMBW-NW70248
+								1503030319175,2107,001 go to adsight,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group 1-2,true,,4844,4,4,579,1,0,KULMBW-NW70248
+								1503030321285,318,29 /saml/login,200,OK,Thread Group 1-2,true,,5136,4,4,318,1,0,KULMBW-NW70248
+								1503030320175,2115,24 /,200,OK,Thread Group 1-3,true,,4844,5,5,581,1,0,KULMBW-NW70248
+								1503030320174,2115,001 go to adsight,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group 1-3,true,,4844,5,5,581,1,0,KULMBW-NW70248
+								1503030322291,316,29 /saml/login,200,OK,Thread Group 1-3,true,,5136,5,5,316,1,0,KULMBW-NW70248
+								1503030321169,2107,24 /,200,OK,Thread Group 1-4,true,,4844,5,5,595,1,0,KULMBW-NW70248
+								1503030321168,2107,001 go to adsight,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group 1-4,true,,4844,5,5,595,1,0,KULMBW-NW70248
+								1503030323276,316,29 /saml/login,200,OK,Thread Group 1-4,true,,5136,5,5,315,1,0,KULMBW-NW70248
+								1503030322173,2124,24 /,200,OK,Thread Group 1-5,true,,4844,5,5,585,1,0,KULMBW-NW70248
+								1503030322173,2124,001 go to adsight,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group 1-5,true,,4844,5,5,585,1,0,KULMBW-NW70248
+								1503030324299,320,29 /saml/login,200,OK,Thread Group 1-5,true,,5136,5,5,320,1,0,KULMBW-NW70248
+								1503030320857,5236,30 /idp/eyJ2c2lkIjoiTUJXOkRFVjpBZHNpZ2h0OlNBTUwyOklkUCJ9/SSO.saml2,200,OK,Thread Group 1-1,true,,33196,5,5,2440,1,0,KULMBW-NW70248
+								1503030320533,5556,002 click login using one pass,200,"Number of samples in transaction : 2, number of failing samples : 0",Thread Group 1-1,true,,38332,5,5,2760,1,0,KULMBW-NW70248
+								1503030321604,4935,30 /idp/eyJ2c2lkIjoiTUJXOkRFVjpBZHNpZ2h0OlNBTUwyOklkUCJ9/SSO.saml2,200,OK,Thread Group 1-2,true,,33196,5,5,2133,1,0,KULMBW-NW70248
+								1503030321284,5253,002 click login using one pass,200,"Number of samples in transaction : 2, number of failing samples : 0",Thread Group 1-2,true,,38332,5,5,2451,1,0,KULMBW-NW70248
+								1503030322620,5100,30 /idp/eyJ2c2lkIjoiTUJXOkRFVjpBZHNpZ2h0OlNBTUwyOklkUCJ9/SSO.saml2,200,OK,Thread Group 1-3,true,,33196,5,5,2317,1,0,KULMBW-NW70248
+								1503030322290,5416,002 click login using one pass,200,"Number of samples in transaction : 2, number of failing samples : 0",Thread Group 1-3,true,,38332,5,5,2633,1,0,KULMBW-NW70248
+								1503030323593,5118,30 /idp/eyJ2c2lkIjoiTUJXOkRFVjpBZHNpZ2h0OlNBTUwyOklkUCJ9/SSO.saml2,200,OK,Thread Group 1-4,true,,33196,5,5,2331,1,0,KULMBW-NW70248
+								1503030323276,5434,002 click login using one pass,200,"Number of samples in transaction : 2, number of failing samples : 0",Thread Group 1-4,true,,38332,5,5,2646,1,0,KULMBW-NW70248
+								1503030324620,4906,30 /idp/eyJ2c2lkIjoiTUJXOkRFVjpBZHNpZ2h0OlNBTUwyOklkUCJ9/SSO.saml2,200,OK,Thread Group 1-5,true,,33196,5,5,2130,1,0,KULMBW-NW70248
+								1503030324298,5226,002 click login using one pass,200,"Number of samples in transaction : 2, number of failing samples : 0",Thread Group 1-5,true,,38332,5,5,2450,1,0,KULMBW-NW70248
+								1503030326096,4930,43 /OnePass/MainPage?cmd=login&log=y,200,OK,Thread Group 1-1,true,,5774,5,5,3636,1,0,KULMBW-NW70248
+								1503030328714,2632,43 /OnePass/MainPage?cmd=login&log=y,200,OK,Thread Group 1-4,true,,5769,5,5,1295,1,0,KULMBW-NW70248
+								1503030326542,4918,43 /OnePass/MainPage?cmd=login&log=y,200,OK,Thread Group 1-2,true,,5764,5,5,3520,1,0,KULMBW-NW70248
+								1503030329529,2584,43 /OnePass/MainPage?cmd=login&log=y,200,OK,Thread Group 1-5,true,,5822,5,5,1268,1,0,KULMBW-NW70248
+								1503030327723,4822,43 /OnePass/MainPage?cmd=login&log=y,200,OK,Thread Group 1-3,true,,5832,5,5,3507,1,0,KULMBW-NW70248
+								1503030331031,2234,46 /saml/SSO,200,OK,Thread Group 1-1,true,,2905,5,5,1631,1,0,KULMBW-NW70248
+								1503030331348,2170,46 /saml/SSO,200,OK,Thread Group 1-4,true,,2905,5,5,1568,1,0,KULMBW-NW70248
+								1503030333266,299,56 /campaign/find,200,OK,Thread Group 1-1,true,,784,5,5,299,1,0,KULMBW-NW70248
+								1503030331462,2209,46 /saml/SSO,200,OK,Thread Group 1-2,true,,2905,5,5,1569,1,0,KULMBW-NW70248
+								1503030333519,336,56 /campaign/find,200,OK,Thread Group 1-4,true,,784,5,5,336,1,0,KULMBW-NW70248
+								1503030333566,319,57 /campaign/list,200,OK,Thread Group 1-1,true,,2101,5,5,319,1,0,KULMBW-NW70248
+								1503030326095,7782,003 login using onepass,200,"Number of samples in transaction : 4, number of failing samples : 0",Thread Group 1-1,true,,11564,5,5,5885,1,0,KULMBW-NW70248
+								1503030333673,296,56 /campaign/find,200,OK,Thread Group 1-2,true,,784,5,5,296,1,0,KULMBW-NW70248
+								1503030333857,302,57 /campaign/list,200,OK,Thread Group 1-4,true,,2101,5,5,302,1,0,KULMBW-NW70248
+								1503030328712,5440,003 login using onepass,200,"Number of samples in transaction : 4, number of failing samples : 0",Thread Group 1-4,true,,11559,5,5,3501,1,0,KULMBW-NW70248
+								1503030333887,305,61 /client/list,200,OK,Thread Group 1-1,true,,1393,5,5,305,1,0,KULMBW-NW70248
+								1503030333886,305,004 click client,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group 1-1,true,,1393,5,5,305,1,0,KULMBW-NW70248
+								1503030333971,304,57 /campaign/list,200,OK,Thread Group 1-2,true,,2101,5,5,304,1,0,KULMBW-NW70248
+								1503030326540,7727,003 login using onepass,200,"Number of samples in transaction : 4, number of failing samples : 0",Thread Group 1-2,true,,11554,5,5,5689,1,0,KULMBW-NW70248
+								1503030332113,2180,46 /saml/SSO,200,OK,Thread Group 1-5,true,,2905,5,5,1573,1,0,KULMBW-NW70248
+								1503030334166,299,61 /client/list,200,OK,Thread Group 1-4,true,,1393,5,5,299,1,0,KULMBW-NW70248
+								1503030334166,299,004 click client,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group 1-4,true,,1393,5,5,299,1,0,KULMBW-NW70248
+								1503030334277,301,61 /client/list,200,OK,Thread Group 1-2,true,,1393,5,5,301,1,0,KULMBW-NW70248
+								1503030334276,301,004 click client,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group 1-2,true,,1393,5,5,301,1,0,KULMBW-NW70248
+							</code></pre>
+				</section>
+				<section>
+					<h2>XML format</h2>
+					<pre><code data-trim data-noescape>
+									&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+									&lt;testResults version=&quot;1.2&quot;&gt;
+										&lt;httpSample t=&quot;2307&quot; lt=&quot;806&quot; ts=&quot;1503037499802&quot; s=&quot;true&quot; lb=&quot;24 /&quot; rc=&quot;200&quot; rm=&quot;OK&quot; tn=&quot;Thread Group 1-1&quot; by=&quot;4844&quot; sc=&quot;1&quot; ec=&quot;0&quot; ng=&quot;2&quot; na=&quot;2&quot; hn=&quot;KULMBW-NW70248&quot; /&gt;
+										&lt;sample t=&quot;2307&quot; lt=&quot;806&quot; ts=&quot;1503037499801&quot; s=&quot;true&quot; lb=&quot;001 go to adsight&quot; rc=&quot;200&quot; rm=&quot;Number of samples in transaction : 1, number of failing samples : 0&quot; tn=&quot;Thread Group 1-1&quot; by=&quot;4844&quot; sc=&quot;1&quot; ec=&quot;0&quot; ng=&quot;2&quot; na=&quot;2&quot; hn=&quot;KULMBW-NW70248&quot; /&gt;
+										&lt;httpSample t=&quot;317&quot; lt=&quot;317&quot; ts=&quot;1503037502110&quot; s=&quot;true&quot; lb=&quot;29 /saml/login&quot; rc=&quot;200&quot; rm=&quot;OK&quot; tn=&quot;Thread Group 1-1&quot; by=&quot;5136&quot; sc=&quot;1&quot; ec=&quot;0&quot; ng=&quot;2&quot; na=&quot;2&quot; hn=&quot;KULMBW-NW70248&quot; /&gt;
+										&lt;httpSample t=&quot;2078&quot; lt=&quot;591&quot; ts=&quot;1503037500799&quot; s=&quot;true&quot; lb=&quot;24 /&quot; rc=&quot;200&quot; rm=&quot;OK&quot; tn=&quot;Thread Group 1-2&quot; by=&quot;4844&quot; sc=&quot;1&quot; ec=&quot;0&quot; ng=&quot;2&quot; na=&quot;2&quot; hn=&quot;KULMBW-NW70248&quot; /&gt;
+										&lt;sample t=&quot;2078&quot; lt=&quot;591&quot; ts=&quot;1503037500798&quot; s=&quot;true&quot; lb=&quot;001 go to adsight&quot; rc=&quot;200&quot; rm=&quot;Number of samples in transaction : 1, number of failing samples : 0&quot; tn=&quot;Thread Group 1-2&quot; by=&quot;4844&quot; sc=&quot;1&quot; ec=&quot;0&quot; ng=&quot;2&quot; na=&quot;2&quot; hn=&quot;KULMBW-NW70248&quot; /&gt;
+										&lt;httpSample t=&quot;323&quot; lt=&quot;323&quot; ts=&quot;1503037502878&quot; s=&quot;true&quot; lb=&quot;29 /saml/login&quot; rc=&quot;200&quot; rm=&quot;OK&quot; tn=&quot;Thread Group 1-2&quot; by=&quot;5136&quot; sc=&quot;1&quot; ec=&quot;0&quot; ng=&quot;2&quot; na=&quot;2&quot; hn=&quot;KULMBW-NW70248&quot; /&gt;
+										&lt;httpSample t=&quot;5477&quot; lt=&quot;2474&quot; ts=&quot;1503037502429&quot; s=&quot;true&quot; lb=&quot;30 /idp/eyJ2c2lkIjoiTUJXOkRFVjpBZHNpZ2h0OlNBTUwyOklkUCJ9/SSO.saml2&quot; rc=&quot;200&quot; rm=&quot;OK&quot; tn=&quot;Thread Group 1-1&quot; by=&quot;33146&quot; sc=&quot;1&quot; ec=&quot;0&quot; ng=&quot;2&quot; na=&quot;2&quot; hn=&quot;KULMBW-NW70248&quot; /&gt;
+										&lt;sample t=&quot;5794&quot; lt=&quot;2791&quot; ts=&quot;1503037502110&quot; s=&quot;true&quot; lb=&quot;002 click login using one pass&quot; rc=&quot;200&quot; rm=&quot;Number of samples in transaction : 2, number of failing samples : 0&quot; tn=&quot;Thread Group 1-1&quot; by=&quot;38282&quot; sc=&quot;1&quot; ec=&quot;0&quot; ng=&quot;2&quot; na=&quot;2&quot; hn=&quot;KULMBW-NW70248&quot; /&gt;
+										&lt;httpSample t=&quot;5034&quot; lt=&quot;2249&quot; ts=&quot;1503037503201&quot; s=&quot;true&quot; lb=&quot;30 /idp/eyJ2c2lkIjoiTUJXOkRFVjpBZHNpZ2h0OlNBTUwyOklkUCJ9/SSO.saml2&quot; rc=&quot;200&quot; rm=&quot;OK&quot; tn=&quot;Thread Group 1-2&quot; by=&quot;33146&quot; sc=&quot;1&quot; ec=&quot;0&quot; ng=&quot;2&quot; na=&quot;2&quot; hn=&quot;KULMBW-NW70248&quot; /&gt;
+										&lt;sample t=&quot;5357&quot; lt=&quot;2572&quot; ts=&quot;1503037502878&quot; s=&quot;true&quot; lb=&quot;002 click login using one pass&quot; rc=&quot;200&quot; rm=&quot;Number of samples in transaction : 2, number of failing samples : 0&quot; tn=&quot;Thread Group 1-2&quot; by=&quot;38282&quot; sc=&quot;1&quot; ec=&quot;0&quot; ng=&quot;2&quot; na=&quot;2&quot; hn=&quot;KULMBW-NW70248&quot; /&gt;
+										&lt;httpSample t=&quot;2670&quot; lt=&quot;1315&quot; ts=&quot;1503037507910&quot; s=&quot;true&quot; lb=&quot;43 /OnePass/MainPage?cmd=login&amp;amp;log=y&quot; rc=&quot;200&quot; rm=&quot;OK&quot; tn=&quot;Thread Group 1-1&quot; by=&quot;5831&quot; sc=&quot;1&quot; ec=&quot;0&quot; ng=&quot;2&quot; na=&quot;2&quot; hn=&quot;KULMBW-NW70248&quot; /&gt;
+										&lt;httpSample t=&quot;2566&quot; lt=&quot;1293&quot; ts=&quot;1503037508235&quot; s=&quot;true&quot; lb=&quot;43 /OnePass/MainPage?cmd=login&amp;amp;log=y&quot; rc=&quot;200&quot; rm=&quot;OK&quot; tn=&quot;Thread Group 1-2&quot; by=&quot;5834&quot; sc=&quot;1&quot; ec=&quot;0&quot; ng=&quot;2&quot; na=&quot;2&quot; hn=&quot;KULMBW-NW70248&quot; /&gt;
+										&lt;httpSample t=&quot;2178&quot; lt=&quot;1569&quot; ts=&quot;1503037510581&quot; s=&quot;true&quot; lb=&quot;46 /saml/SSO&quot; rc=&quot;200&quot; rm=&quot;OK&quot; tn=&quot;Thread Group 1-1&quot; by=&quot;2905&quot; sc=&quot;1&quot; ec=&quot;0&quot; ng=&quot;2&quot; na=&quot;2&quot; hn=&quot;KULMBW-NW70248&quot; /&gt;
+										&lt;httpSample t=&quot;2142&quot; lt=&quot;1541&quot; ts=&quot;1503037510801&quot; s=&quot;true&quot; lb=&quot;46 /saml/SSO&quot; rc=&quot;200&quot; rm=&quot;OK&quot; tn=&quot;Thread Group 1-2&quot; by=&quot;2905&quot; sc=&quot;1&quot; ec=&quot;0&quot; ng=&quot;2&quot; na=&quot;2&quot; hn=&quot;KULMBW-NW70248&quot; /&gt;
+										&lt;httpSample t=&quot;304&quot; lt=&quot;304&quot; ts=&quot;1503037512760&quot; s=&quot;true&quot; lb=&quot;56 /campaign/find&quot; rc=&quot;200&quot; rm=&quot;OK&quot; tn=&quot;Thread Group 1-1&quot; by=&quot;784&quot; sc=&quot;1&quot; ec=&quot;0&quot; ng=&quot;2&quot; na=&quot;2&quot; hn=&quot;KULMBW-NW70248&quot; /&gt;
+										&lt;httpSample t=&quot;298&quot; lt=&quot;298&quot; ts=&quot;1503037512943&quot; s=&quot;true&quot; lb=&quot;56 /campaign/find&quot; rc=&quot;200&quot; rm=&quot;OK&quot; tn=&quot;Thread Group 1-2&quot; by=&quot;784&quot; sc=&quot;1&quot; ec=&quot;0&quot; ng=&quot;2&quot; na=&quot;2&quot; hn=&quot;KULMBW-NW70248&quot; /&gt;
+										&lt;httpSample t=&quot;310&quot; lt=&quot;310&quot; ts=&quot;1503037513065&quot; s=&quot;true&quot; lb=&quot;57 /campaign/list&quot; rc=&quot;200&quot; rm=&quot;OK&quot; tn=&quot;Thread Group 1-1&quot; by=&quot;2101&quot; sc=&quot;1&quot; ec=&quot;0&quot; ng=&quot;2&quot; na=&quot;2&quot; hn=&quot;KULMBW-NW70248&quot; /&gt;
+										&lt;sample t=&quot;5462&quot; lt=&quot;3498&quot; ts=&quot;1503037507910&quot; s=&quot;true&quot; lb=&quot;003 login using onepass&quot; rc=&quot;200&quot; rm=&quot;Number of samples in transaction : 4, number of failing samples : 0&quot; tn=&quot;Thread Group 1-1&quot; by=&quot;11621&quot; sc=&quot;1&quot; ec=&quot;0&quot; ng=&quot;2&quot; na=&quot;2&quot; hn=&quot;KULMBW-NW70248&quot; /&gt;
+										&lt;httpSample t=&quot;306&quot; lt=&quot;306&quot; ts=&quot;1503037513243&quot; s=&quot;true&quot; lb=&quot;57 /campaign/list&quot; rc=&quot;200&quot; rm=&quot;OK&quot; tn=&quot;Thread Group 1-2&quot; by=&quot;2101&quot; sc=&quot;1&quot; ec=&quot;0&quot; ng=&quot;2&quot; na=&quot;2&quot; hn=&quot;KULMBW-NW70248&quot; /&gt;
+										&lt;sample t=&quot;5312&quot; lt=&quot;3438&quot; ts=&quot;1503037508235&quot; s=&quot;true&quot; lb=&quot;003 login using onepass&quot; rc=&quot;200&quot; rm=&quot;Number of samples in transaction : 4, number of failing samples : 0&quot; tn=&quot;Thread Group 1-2&quot; by=&quot;11624&quot; sc=&quot;1&quot; ec=&quot;0&quot; ng=&quot;2&quot; na=&quot;2&quot; hn=&quot;KULMBW-NW70248&quot; /&gt;
+										&lt;httpSample t=&quot;305&quot; lt=&quot;304&quot; ts=&quot;1503037513376&quot; s=&quot;true&quot; lb=&quot;61 /client/list&quot; rc=&quot;200&quot; rm=&quot;OK&quot; tn=&quot;Thread Group 1-1&quot; by=&quot;1393&quot; sc=&quot;1&quot; ec=&quot;0&quot; ng=&quot;2&quot; na=&quot;2&quot; hn=&quot;KULMBW-NW70248&quot; /&gt;
+										&lt;sample t=&quot;305&quot; lt=&quot;304&quot; ts=&quot;1503037513376&quot; s=&quot;true&quot; lb=&quot;004 click client&quot; rc=&quot;200&quot; rm=&quot;Number of samples in transaction : 1, number of failing samples : 0&quot; tn=&quot;Thread Group 1-1&quot; by=&quot;1393&quot; sc=&quot;1&quot; ec=&quot;0&quot; ng=&quot;2&quot; na=&quot;2&quot; hn=&quot;KULMBW-NW70248&quot; /&gt;
+										&lt;httpSample t=&quot;304&quot; lt=&quot;304&quot; ts=&quot;1503037513551&quot; s=&quot;true&quot; lb=&quot;61 /client/list&quot; rc=&quot;200&quot; rm=&quot;OK&quot; tn=&quot;Thread Group 1-2&quot; by=&quot;1393&quot; sc=&quot;1&quot; ec=&quot;0&quot; ng=&quot;2&quot; na=&quot;2&quot; hn=&quot;KULMBW-NW70248&quot; /&gt;
+										&lt;sample t=&quot;304&quot; lt=&quot;304&quot; ts=&quot;1503037513551&quot; s=&quot;true&quot; lb=&quot;004 click client&quot; rc=&quot;200&quot; rm=&quot;Number of samples in transaction : 1, number of failing samples : 0&quot; tn=&quot;Thread Group 1-2&quot; by=&quot;1393&quot; sc=&quot;1&quot; ec=&quot;0&quot; ng=&quot;2&quot; na=&quot;2&quot; hn=&quot;KULMBW-NW70248&quot; /&gt;
+										&lt;httpSample t=&quot;1490&quot; lt=&quot;299&quot; ts=&quot;1503037513681&quot; s=&quot;true&quot; lb=&quot;62 /saml/logout&quot; rc=&quot;200&quot; rm=&quot;OK&quot; tn=&quot;Thread Group 1-1&quot; by=&quot;5168&quot; sc=&quot;1&quot; ec=&quot;0&quot; ng=&quot;2&quot; na=&quot;2&quot; hn=&quot;KULMBW-NW70248&quot; /&gt;
+										&lt;httpSample t=&quot;1498&quot; lt=&quot;300&quot; ts=&quot;1503037513856&quot; s=&quot;true&quot; lb=&quot;62 /saml/logout&quot; rc=&quot;200&quot; rm=&quot;OK&quot; tn=&quot;Thread Group 1-2&quot; by=&quot;5168&quot; sc=&quot;1&quot; ec=&quot;0&quot; ng=&quot;2&quot; na=&quot;2&quot; hn=&quot;KULMBW-NW70248&quot; /&gt;
+										&lt;httpSample t=&quot;895&quot; lt=&quot;595&quot; ts=&quot;1503037515172&quot; s=&quot;true&quot; lb=&quot;63 /&quot; rc=&quot;200&quot; rm=&quot;OK&quot; tn=&quot;Thread Group 1-1&quot; by=&quot;4769&quot; sc=&quot;1&quot; ec=&quot;0&quot; ng=&quot;2&quot; na=&quot;2&quot; hn=&quot;KULMBW-NW70248&quot; /&gt;
+										&lt;sample t=&quot;2385&quot; lt=&quot;894&quot; ts=&quot;1503037513681&quot; s=&quot;true&quot; lb=&quot;005 logout&quot; rc=&quot;200&quot; rm=&quot;Number of samples in transaction : 2, number of failing samples : 0&quot; tn=&quot;Thread Group 1-1&quot; by=&quot;9937&quot; sc=&quot;1&quot; ec=&quot;0&quot; ng=&quot;2&quot; na=&quot;2&quot; hn=&quot;KULMBW-NW70248&quot; /&gt;
+										&lt;httpSample t=&quot;887&quot; lt=&quot;584&quot; ts=&quot;1503037515354&quot; s=&quot;true&quot; lb=&quot;63 /&quot; rc=&quot;200&quot; rm=&quot;OK&quot; tn=&quot;Thread Group 1-2&quot; by=&quot;4769&quot; sc=&quot;1&quot; ec=&quot;0&quot; ng=&quot;2&quot; na=&quot;2&quot; hn=&quot;KULMBW-NW70248&quot; /&gt;
+										&lt;sample t=&quot;2385&quot; lt=&quot;884&quot; ts=&quot;1503037513856&quot; s=&quot;true&quot; lb=&quot;005 logout&quot; rc=&quot;200&quot; rm=&quot;Number of samples in transaction : 2, number of failing samples : 0&quot; tn=&quot;Thread Group 1-2&quot; by=&quot;9937&quot; sc=&quot;1&quot; ec=&quot;0&quot; ng=&quot;2&quot; na=&quot;2&quot; hn=&quot;KULMBW-NW70248&quot; /&gt;
+										&lt;httpSample t=&quot;1197&quot; lt=&quot;303&quot; ts=&quot;1503037516068&quot; s=&quot;true&quot; lb=&quot;24 /&quot; rc=&quot;200&quot; rm=&quot;OK&quot; tn=&quot;Thread Group 1-1&quot; by=&quot;4769&quot; sc=&quot;1&quot; ec=&quot;0&quot; ng=&quot;2&quot; na=&quot;2&quot; hn=&quot;KULMBW-NW70248&quot; /&gt;
+										&lt;sample t=&quot;1197&quot; lt=&quot;303&quot; ts=&quot;1503037516068&quot; s=&quot;true&quot; lb=&quot;001 go to adsight&quot; rc=&quot;200&quot; rm=&quot;Number of samples in transaction : 1, number of failing samples : 0&quot; tn=&quot;Thread Group 1-1&quot; by=&quot;4769&quot; sc=&quot;1&quot; ec=&quot;0&quot; ng=&quot;2&quot; na=&quot;2&quot; hn=&quot;KULMBW-NW70248&quot; /&gt;
+										&lt;httpSample t=&quot;1191&quot; lt=&quot;293&quot; ts=&quot;1503037516242&quot; s=&quot;true&quot; lb=&quot;24 /&quot; rc=&quot;200&quot; rm=&quot;OK&quot; tn=&quot;Thread Group 1-2&quot; by=&quot;4769&quot; sc=&quot;1&quot; ec=&quot;0&quot; ng=&quot;2&quot; na=&quot;2&quot; hn=&quot;KULMBW-NW70248&quot; /&gt;
+										&lt;sample t=&quot;1191&quot; lt=&quot;293&quot; ts=&quot;1503037516242&quot; s=&quot;true&quot; lb=&quot;001 go to adsight&quot; rc=&quot;200&quot; rm=&quot;Number of samples in transaction : 1, number of failing samples : 0&quot; tn=&quot;Thread Group 1-2&quot; by=&quot;4769&quot; sc=&quot;1&quot; ec=&quot;0&quot; ng=&quot;2&quot; na=&quot;2&quot; hn=&quot;KULMBW-NW70248&quot; /&gt;
+										&lt;httpSample t=&quot;314&quot; lt=&quot;314&quot; ts=&quot;1503037517266&quot; s=&quot;true&quot; lb=&quot;29 /saml/login&quot; rc=&quot;200&quot; rm=&quot;OK&quot; tn=&quot;Thread Group 1-1&quot; by=&quot;5136&quot; sc=&quot;1&quot; ec=&quot;0&quot; ng=&quot;2&quot; na=&quot;2&quot; hn=&quot;KULMBW-NW70248&quot; /&gt;
+										&lt;httpSample t=&quot;313&quot; lt=&quot;313&quot; ts=&quot;1503037517435&quot; s=&quot;true&quot; lb=&quot;29 /saml/login&quot; rc=&quot;200&quot; rm=&quot;OK&quot; tn=&quot;Thread Group 1-2&quot; by=&quot;5161&quot; sc=&quot;1&quot; ec=&quot;0&quot; ng=&quot;2&quot; na=&quot;2&quot; hn=&quot;KULMBW-NW70248&quot; /&gt;
+										&lt;httpSample t=&quot;3794&quot; lt=&quot;1527&quot; ts=&quot;1503037517581&quot; s=&quot;true&quot; lb=&quot;30 /idp/eyJ2c2lkIjoiTUJXOkRFVjpBZHNpZ2h0OlNBTUwyOklkUCJ9/SSO.saml2&quot; rc=&quot;200&quot; rm=&quot;OK&quot; tn=&quot;Thread Group 1-1&quot; by=&quot;32694&quot; sc=&quot;1&quot; ec=&quot;0&quot; ng=&quot;2&quot; na=&quot;2&quot; hn=&quot;KULMBW-NW70248&quot; /&gt;
+										&lt;sample t=&quot;4108&quot; lt=&quot;1841&quot; ts=&quot;1503037517265&quot; s=&quot;true&quot; lb=&quot;002 click login using one pass&quot; rc=&quot;200&quot; rm=&quot;Number of samples in transaction : 2, number of failing samples : 0&quot; tn=&quot;Thread Group 1-1&quot; by=&quot;37830&quot; sc=&quot;1&quot; ec=&quot;0&quot; ng=&quot;2&quot; na=&quot;2&quot; hn=&quot;KULMBW-NW70248&quot; /&gt;
+										&lt;httpSample t=&quot;3869&quot; lt=&quot;1577&quot; ts=&quot;1503037517748&quot; s=&quot;true&quot; lb=&quot;30 /idp/eyJ2c2lkIjoiTUJXOkRFVjpBZHNpZ2h0OlNBTUwyOklkUCJ9/SSO.saml2&quot; rc=&quot;200&quot; rm=&quot;OK&quot; tn=&quot;Thread Group 1-2&quot; by=&quot;32694&quot; sc=&quot;1&quot; ec=&quot;0&quot; ng=&quot;2&quot; na=&quot;2&quot; hn=&quot;KULMBW-NW70248&quot; /&gt;
+										&lt;sample t=&quot;4182&quot; lt=&quot;1890&quot; ts=&quot;1503037517435&quot; s=&quot;true&quot; lb=&quot;002 click login using one pass&quot; rc=&quot;200&quot; rm=&quot;Number of samples in transaction : 2, number of failing samples : 0&quot; tn=&quot;Thread Group 1-2&quot; by=&quot;37855&quot; sc=&quot;1&quot; ec=&quot;0&quot; ng=&quot;2&quot; na=&quot;2&quot; hn=&quot;KULMBW-NW70248&quot; /&gt;
+										&lt;httpSample t=&quot;2788&quot; lt=&quot;2038&quot; ts=&quot;1503037521378&quot; s=&quot;true&quot; lb=&quot;43 /OnePass/MainPage?cmd=login&amp;amp;log=y&quot; rc=&quot;200&quot; rm=&quot;OK&quot; tn=&quot;Thread Group 1-1&quot; by=&quot;32895&quot; sc=&quot;1&quot; ec=&quot;0&quot; ng=&quot;2&quot; na=&quot;2&quot; hn=&quot;KULMBW-NW70248&quot; /&gt;
+										&lt;httpSample t=&quot;2782&quot; lt=&quot;2045&quot; ts=&quot;1503037521620&quot; s=&quot;true&quot; lb=&quot;43 /OnePass/MainPage?cmd=login&amp;amp;log=y&quot; rc=&quot;200&quot; rm=&quot;OK&quot; tn=&quot;Thread Group 1-2&quot; by=&quot;32895&quot; sc=&quot;1&quot; ec=&quot;0&quot; ng=&quot;2&quot; na=&quot;2&quot; hn=&quot;KULMBW-NW70248&quot; /&gt;
+										&lt;httpSample t=&quot;1886&quot; lt=&quot;1577&quot; ts=&quot;1503037524168&quot; s=&quot;true&quot; lb=&quot;46 /saml/SSO&quot; rc=&quot;200&quot; rm=&quot;OK&quot; tn=&quot;Thread Group 1-1&quot; by=&quot;2310&quot; sc=&quot;1&quot; ec=&quot;0&quot; ng=&quot;2&quot; na=&quot;2&quot; hn=&quot;KULMBW-NW70248&quot; /&gt;
+										&lt;httpSample t=&quot;1845&quot; lt=&quot;1537&quot; ts=&quot;1503037524404&quot; s=&quot;true&quot; lb=&quot;46 /saml/SSO&quot; rc=&quot;200&quot; rm=&quot;OK&quot; tn=&quot;Thread Group 1-2&quot; by=&quot;2310&quot; sc=&quot;1&quot; ec=&quot;0&quot; ng=&quot;2&quot; na=&quot;2&quot; hn=&quot;KULMBW-NW70248&quot; /&gt;
+										&lt;httpSample t=&quot;1538&quot; lt=&quot;597&quot; ts=&quot;1503037526055&quot; s=&quot;true&quot; lb=&quot;56 /campaign/find&quot; rc=&quot;200&quot; rm=&quot;OK&quot; tn=&quot;Thread Group 1-1&quot; by=&quot;4769&quot; sc=&quot;1&quot; ec=&quot;0&quot; ng=&quot;2&quot; na=&quot;2&quot; hn=&quot;KULMBW-NW70248&quot; /&gt;
+										&lt;httpSample t=&quot;1496&quot; lt=&quot;591&quot; ts=&quot;1503037526249&quot; s=&quot;true&quot; lb=&quot;56 /campaign/find&quot; rc=&quot;200&quot; rm=&quot;OK&quot; tn=&quot;Thread Group 1-2&quot; by=&quot;4769&quot; sc=&quot;1&quot; ec=&quot;0&quot; ng=&quot;2&quot; na=&quot;2&quot; hn=&quot;KULMBW-NW70248&quot; /&gt;
+										&lt;httpSample t=&quot;602&quot; lt=&quot;298&quot; ts=&quot;1503037527594&quot; s=&quot;true&quot; lb=&quot;57 /campaign/list&quot; rc=&quot;200&quot; rm=&quot;OK&quot; tn=&quot;Thread Group 1-1&quot; by=&quot;4769&quot; sc=&quot;1&quot; ec=&quot;0&quot; ng=&quot;2&quot; na=&quot;2&quot; hn=&quot;KULMBW-NW70248&quot; /&gt;
+										&lt;sample t=&quot;6814&quot; lt=&quot;4510&quot; ts=&quot;1503037521377&quot; s=&quot;true&quot; lb=&quot;003 login using onepass&quot; rc=&quot;200&quot; rm=&quot;Number of samples in transaction : 4, number of failing samples : 0&quot; tn=&quot;Thread Group 1-1&quot; by=&quot;44743&quot; sc=&quot;1&quot; ec=&quot;0&quot; ng=&quot;2&quot; na=&quot;2&quot; hn=&quot;KULMBW-NW70248&quot; /&gt;
+										&lt;httpSample t=&quot;597&quot; lt=&quot;294&quot; ts=&quot;1503037527746&quot; s=&quot;true&quot; lb=&quot;57 /campaign/list&quot; rc=&quot;200&quot; rm=&quot;OK&quot; tn=&quot;Thread Group 1-2&quot; by=&quot;4769&quot; sc=&quot;1&quot; ec=&quot;0&quot; ng=&quot;2&quot; na=&quot;2&quot; hn=&quot;KULMBW-NW70248&quot; /&gt;
+										&lt;sample t=&quot;6720&quot; lt=&quot;4467&quot; ts=&quot;1503037521619&quot; s=&quot;true&quot; lb=&quot;003 login using onepass&quot; rc=&quot;200&quot; rm=&quot;Number of samples in transaction : 4, number of failing samples : 0&quot; tn=&quot;Thread Group 1-2&quot; by=&quot;44743&quot; sc=&quot;1&quot; ec=&quot;0&quot; ng=&quot;2&quot; na=&quot;2&quot; hn=&quot;KULMBW-NW70248&quot; /&gt;
+										&lt;httpSample t=&quot;1497&quot; lt=&quot;597&quot; ts=&quot;1503037528197&quot; s=&quot;true&quot; lb=&quot;61 /client/list&quot; rc=&quot;200&quot; rm=&quot;OK&quot; tn=&quot;Thread Group 1-1&quot; by=&quot;4769&quot; sc=&quot;1&quot; ec=&quot;0&quot; ng=&quot;2&quot; na=&quot;2&quot; hn=&quot;KULMBW-NW70248&quot; /&gt;
+										&lt;sample t=&quot;1497&quot; lt=&quot;597&quot; ts=&quot;1503037528196&quot; s=&quot;true&quot; lb=&quot;004 click client&quot; rc=&quot;200&quot; rm=&quot;Number of samples in transaction : 1, number of failing samples : 0&quot; tn=&quot;Thread Group 1-1&quot; by=&quot;4769&quot; sc=&quot;1&quot; ec=&quot;0&quot; ng=&quot;2&quot; na=&quot;2&quot; hn=&quot;KULMBW-NW70248&quot; /&gt;
+										&lt;httpSample t=&quot;1492&quot; lt=&quot;598&quot; ts=&quot;1503037528344&quot; s=&quot;true&quot; lb=&quot;61 /client/list&quot; rc=&quot;200&quot; rm=&quot;OK&quot; tn=&quot;Thread Group 1-2&quot; by=&quot;4769&quot; sc=&quot;1&quot; ec=&quot;0&quot; ng=&quot;2&quot; na=&quot;2&quot; hn=&quot;KULMBW-NW70248&quot; /&gt;
+										&lt;sample t=&quot;1492&quot; lt=&quot;598&quot; ts=&quot;1503037528343&quot; s=&quot;true&quot; lb=&quot;004 click client&quot; rc=&quot;200&quot; rm=&quot;Number of samples in transaction : 1, number of failing samples : 0&quot; tn=&quot;Thread Group 1-2&quot; by=&quot;4769&quot; sc=&quot;1&quot; ec=&quot;0&quot; ng=&quot;2&quot; na=&quot;2&quot; hn=&quot;KULMBW-NW70248&quot; /&gt;
+										&lt;httpSample t=&quot;898&quot; lt=&quot;297&quot; ts=&quot;1503037529695&quot; s=&quot;true&quot; lb=&quot;62 /saml/logout&quot; rc=&quot;200&quot; rm=&quot;OK&quot; tn=&quot;Thread Group 1-1&quot; by=&quot;5168&quot; sc=&quot;1&quot; ec=&quot;0&quot; ng=&quot;2&quot; na=&quot;2&quot; hn=&quot;KULMBW-NW70248&quot; /&gt;
+										&lt;httpSample t=&quot;902&quot; lt=&quot;298&quot; ts=&quot;1503037529838&quot; s=&quot;true&quot; lb=&quot;62 /saml/logout&quot; rc=&quot;200&quot; rm=&quot;OK&quot; tn=&quot;Thread Group 1-2&quot; by=&quot;5168&quot; sc=&quot;1&quot; ec=&quot;0&quot; ng=&quot;2&quot; na=&quot;2&quot; hn=&quot;KULMBW-NW70248&quot; /&gt;
+										&lt;httpSample t=&quot;1478&quot; lt=&quot;586&quot; ts=&quot;1503037530594&quot; s=&quot;true&quot; lb=&quot;63 /&quot; rc=&quot;200&quot; rm=&quot;OK&quot; tn=&quot;Thread Group 1-1&quot; by=&quot;4769&quot; sc=&quot;1&quot; ec=&quot;0&quot; ng=&quot;2&quot; na=&quot;2&quot; hn=&quot;KULMBW-NW70248&quot; /&gt;
+										&lt;sample t=&quot;2376&quot; lt=&quot;883&quot; ts=&quot;1503037529694&quot; s=&quot;true&quot; lb=&quot;005 logout&quot; rc=&quot;200&quot; rm=&quot;Number of samples in transaction : 2, number of failing samples : 0&quot; tn=&quot;Thread Group 1-1&quot; by=&quot;9937&quot; sc=&quot;1&quot; ec=&quot;0&quot; ng=&quot;2&quot; na=&quot;2&quot; hn=&quot;KULMBW-NW70248&quot; /&gt;
+										&lt;httpSample t=&quot;1475&quot; lt=&quot;595&quot; ts=&quot;1503037530741&quot; s=&quot;true&quot; lb=&quot;63 /&quot; rc=&quot;200&quot; rm=&quot;OK&quot; tn=&quot;Thread Group 1-2&quot; by=&quot;4769&quot; sc=&quot;1&quot; ec=&quot;0&quot; ng=&quot;1&quot; na=&quot;1&quot; hn=&quot;KULMBW-NW70248&quot; /&gt;
+										&lt;sample t=&quot;2377&quot; lt=&quot;893&quot; ts=&quot;1503037529837&quot; s=&quot;true&quot; lb=&quot;005 logout&quot; rc=&quot;200&quot; rm=&quot;Number of samples in transaction : 2, number of failing samples : 0&quot; tn=&quot;Thread Group 1-2&quot; by=&quot;9937&quot; sc=&quot;1&quot; ec=&quot;0&quot; ng=&quot;1&quot; na=&quot;1&quot; hn=&quot;KULMBW-NW70248&quot; /&gt;
+									&lt;/testResults&gt;
+								</code></pre>
+				</section>
+			</section>
+			<section>
+				<section>
+					<h2>Testing</h2>
+					<ul>
+						<li class="fragment">Visibility: Black box, Gray box</li>
+						<li class="fragment">Levels: Integration, Component interface, System</li>
+						<li class="fragment">Types: Smoke, Regression, Performance</li>
+					</ul>
+
+					<aside class="notes">
+						Testing against external APIs, however may be privileged to run against various components. Also understanding of architecture
+						may drive test design. May test end-to-end, verify interfaces, and check data between units.
+					</aside>
+				</section>
+				<section>
+					<h2>Testing</h2>
+					<ul>
+						<li class="fragment">Performance: Best possible response</li>
+						<li class="fragment">Load: Performance with standard traffic</li>
+						<li class="fragment">Stress: Find system breaking point</li>
+						<li class="fragment">Soak/Endurance: memory leakage</li>
+						<li class="fragment">Volume: large data dump</li>
+					</ul>
+					<br><br>
+					<p class="fragment">
+						<mark>WARNING:</mark> May crash your server.</p>
+
+					<aside class="notes">
+						WARNING: This is basically a DOS attack and may bring down your servers. You have been warned.
+						<b>Performance</b> test "best possible" response under specified configuration and conditions.
+						<b>Load</b> test performance with concurrent requests, profile the system - how components scale with traffic.
+						<b>Stress</b> identify the breaking point of the system (max load).
+					</aside>
+				</section>
+			</section>
+			<section>
+				<section>
+					<h2>Test Design</h2>
+					<ul>
+						<li>Best performance</li>
+						<li>Maximum capacity</li>
+						<li>Performance at peak load</li>
+						<li>System bottlenecks</li>
+						<li>Profiling of system</li>
+						<li>How does the system scales?</li>
+					</ul>
+
+					<aside class="notes">
+						Your tests should answer a question. May use other applications to collect data such as JMX, Zabbix, or system monitors.
+						Narrate testing data solutions at Eli Lilly. /ENGAGE/ Describe testing applications, ask for suggested uses.
+					</aside>
+				</section>
+			</section>
+			<section>
+				<section>
+					<h2>Advanced Topics</h2>
+					<ul>
+						<li>Parameterize</li>
+						<li>Correlation</li>
+						<li>Combine test cases</li>
+						<li>Multiple nodes</li>
+						<li>Run from command line</li>
+					</ul>
+				</section>
+
+				<section>
+					<h2>Parameterize</h2>
+					<p>Built-in Variables
+						<pre><code>${__threadNum}</code></pre>
+						<pre><code>${__time(EEE\, d MMM yyyy)}</code></pre>
+					</p>
+					<p>Custom variables
+						<pre><code>${VARIABLE}</code></pre>
+					</p>
+					<pre><code>${sample_size}</code></pre>
+					<pre><code>${__javaScript('${sample_size}'*'${test_variants}')}</code></pre>
+
+					<aside class="notes">
+						Many built-in functions exists. May write JavaScript or BeanShell scripts for more advanced functions.
+					</aside>
+				</section>
+
+				<section>
+					<h2>Correlation</h2>
+					<p>Correlation is the most important aspect of scripting on secure site (saml).</p>
+					<p>It generally includes fetching dynamic data from preceding requests/calls and posting it to the subsequent requests</p>
+					<ul>
+						<li>regular expression</li>
+						<li>xpath</li>
+						<li>json</li>
+						<li>JDBC</li>
+						<li>custom beanshell/groovy/Java</li>
+					</ul>
+					<aside class="notes">
+						if we just playback this script, the test will fail even for a single user. This is because of the authentication mechanism
+						used. When we login to a website, session variables are dynamically created. These session variables are passed to
+						the subsequent requests and help validation and authentication of the actions performed. So, one cannot just record
+						and playback the requests having these variables. Here, we need to correlate the web requests with the dynamic variables.
+						And for correlation, we need to use the "Regular Expression Extractor" which makes use of regular expressions.
+					</aside>
+				</section>
+
+				<section>
+					<h2>multiple test cases</h2>
+					<ul>
+						<li>Based on load index model</li>
+						<li>replicate real usage on the server</li>
+					</ul>
+					<aside class="notes">
+
+					</aside>
+				</section>
+
+				<section>
+					<h2>Multiple nodes</h2>
+					<p><img data-src="img/JMeter-Distributed-Architecture.jpg" alt="Jmeter distributed test environment"></p>
+					<p><a src="http://www.infobeans.com/wp-content/uploads/2014/09/JMeter-Distributed-Architecture.jpg">source</a></p>
+					<aside class="notes">
+						Part of the power of JMeter is the ability to not only spawn multiple threads, but to synchronize threads across multiple
+						machines in a network. This can be a great candidate for temporary nodes on EC2. Start using Run > Remote Start All,
+						clicking double green arrows, or CTRL+SHIFT+R.
+						<ul>
+							<li>Configure nodes (Same Java & JMeter versions)</li>
+							<li>Start servers (/bin/jmeter-server)</li>
+							<li>List servers in /bin/jmeter.properties (remote_hosts)</li>
+							<li>Start JMeter Client from GUI</li>
+						</ul>
+					</aside>
+				</section>
+
+				<section>
+					<h2>Run from command line</h2>
+					<code>
+						jmeter -n -t script.jmx -R 10.10.0.1,10.10.0.2,hostname3
+					</code>
+
+					<aside class="notes">
+						-n means no GUI, -t specifies JMX script, -R provides remote servers
+					</aside>
+				</section>
+			</section>
+			<section>
+				<h2>Extending JMeter: Plugins</h2>
+				<h3><a href="http://jmeter-plugins.org/wiki/StandardSet/">Standard Set</a></h3>
+				<h3><a href="http://jmeter-plugins.org/wiki/ExtrasSet/">Extras Set</a></h3>
+			</section>
+			<section>
+				<h2>Further Reading</h2>
+				<ul>
+					<li><a href="usermanual/jmeter_distributed_testing_step_by_step.html">Distributed Testing</a></li>
+					<li><a href="usermanual/jmeter_proxy_step_by_step.html">Recording Tests</a></li>
+					<li><a href="usermanual/junitsampler_tutorial.html">JUnit Sampler</a></li>
+					<li><a href="usermanual/jmeter_accesslog_sampler_step_by_step.html">Access Log Sampler</a></li>
+					<li><a href="usermanual/jmeter_tutorial.html">Extending JMeter</a></li>
+				</ul>
+			</section>
+			<section>
+				<h2>Extending JMeter: Plugins</h2>
+				<h3><a href="http://jmeter-plugins.org/wiki/StandardSet/">Standard Set</a></h3>
+				<h3><a href="http://jmeter-plugins.org/wiki/ExtrasSet/">Extras Set</a></h3>
+			</section>
+			<section>
+				<section>
+					<h2>Extending JMeter: Customization</h2>
+					<ul>
+						<li>&lt;component_name&gt;.java</li>
+						<li>&lt;component_name&gt;BeanInfo.java</li>
+						<li>&lt;component_name&gt;Resources.properties</li>
+					</ul>
+
+					<aside class="notes">
+						JMeter can be extended by creating plugins in Java and putting the JAR into the lib/ext folder. Here is an example of a simple
+						JDBC sampler I created for testing purposes. We discovered that this was necessary to isolate DB performance from network
+						performance.
+					</aside>
+				</section>
+				<section>
+					<h2>SimplePlugin.java</h2>
+					<pre><code data-trim>
+							package devmamak.jmeter.simplePlugin;
+							
+							import org.apache.jmeter.samplers.AbstractSampler;
+							import org.apache.jmeter.samplers.Entry;
+							import org.apache.jmeter.samplers.SampleResult;
+							import org.apache.jmeter.testbeans.TestBean;
+							
+							public class SimplePlugin extends AbstractSampler implements TestBean {
+							
+								private static final long serialVersionUID = 1L;
+								
+								private String name;
+								private String say;
+							
+								public String getName() {
+									return name;
+								}
+							
+								public void setName(String name) {
+									this.name = name;
+								}
+							
+								public String getSay() {
+									return say;
+								}
+							
+								public void setSay(String say) {
+									this.say = say;
+								}
+							
+								@Override
+								public SampleResult sample(Entry e) {
+									SampleResult res = new SampleResult();
+									res.setSampleLabel(getName());
+									res.sampleStart();
+									
+									res.setResponseData("Hello Dev@Mamak, " 
+									+ this.name 
+									+ " says that \"" 
+									+ this.say + "\"", null);
+									res.setDataType(SampleResult.TEXT);
+									res.sampleEnd();
+									res.setResponseCodeOK();
+									res.setResponseMessage("yeah, dev@mamak");
+									res.setSuccessful(true);
+									return res;
+								}
+							
+							}
+					</code data-trim></pre>
+				</section>
+				<section>
+						<h2>SimplePluginBeanInfo.java</h2>
+						<pre><code data-trim>
+								package devmamak.jmeter.simplePlugin;
+								
+								import java.beans.PropertyDescriptor;
+								
+								import org.apache.jmeter.testbeans.BeanInfoSupport;
+								import org.apache.jmeter.testbeans.gui.TypeEditor;
+								
+								public class SimplePluginBeanInfo extends BeanInfoSupport {
+								
+									private PropertyDescriptor getprop(String name, Object deflt) {
+										PropertyDescriptor p = property(name);
+										p.setValue(DEFAULT, deflt);
+										p.setValue(NOT_UNDEFINED, Boolean.TRUE);
+										return p;
+									}
+								
+									public SimplePluginBeanInfo() {
+										super(SimplePlugin.class);
+										getprop("name","guys");
+										property("say", TypeEditor.TextAreaEditor);
+									}
+								
+								}
+						</code data-trim></pre>
+					</section>
+					<section>
+							<h2>SimplePluginResources.properties</h2>
+							<pre><code data-trim>
+									displayName=Dev Mamak Example
+									name.displayName=Person Name
+									say.displayName=Person Say
+							</code data-trim></pre>
+						</section>
+			</section>
+			<section>
+					<h2>Load Testing with JMeter</h2>
+					<p><a href="http://mrdowden.github.io/presentations/jmeter-load-testing/">http://mrdowden.github.io/presentations/jmeter-load-testing/</a></p>
+					<br><br>
+					<h2>Contact</h2>
+					<p>
+						<a href="https://www.linkedin.com/in/firdaus-kamaruddin-53a4657a/">linkedin.com</a>
+					</p>
+					<br>
+					<p class="small">
+						Presentation Powered by reveal.js: <a href="http://lab.hakim.se/reveal-js/">http://lab.hakim.se/reveal-js/ </a>
+					</p>
+				</section>
+		</div>
+	</div>
+
+	<script src="../lib/js/head.min.js"></script>
+	<script src="../js/reveal.js"></script>
+
+	<script>
+		// More info about config & dependencies:
+		// - https://github.com/hakimel/reveal.js#configuration
+		// - https://github.com/hakimel/reveal.js#dependencies
+		Reveal.initialize({
+			width: "100%",
+			height: "100%",
+			margin: 0,
+			minScale: 1,
+			maxScale: 1,
+			transition: Reveal.getQueryHash().transition || 'default',
+			dependencies: [
+				{ src: '../plugin/markdown/marked.js' },
+				{ src: '../plugin/markdown/markdown.js' },
+				{ src: '../plugin/notes/notes.js', async: true },
+				{ src: '../plugin/highlight/highlight.js', async: true, callback: function () { hljs.initHighlightingOnLoad(); } }
+			]
+		});
+	</script>
+</body>
+
+</html>
