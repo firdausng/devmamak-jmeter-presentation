@@ -8,7 +8,7 @@
 	<title>Load Testing with JMeter</title>
 
 	<link rel="stylesheet" href="css/reveal.css">
-	<link rel="stylesheet" href="css/theme/beige.css">
+	<link rel="stylesheet" href="css/theme/league.css">
 
 	<!-- Theme used for syntax highlighting of code -->
 	<link rel="stylesheet" href="lib/css/zenburn.css">
@@ -112,7 +112,7 @@
 						<li>Timing & Scheduling</li>
 						<li>Extensible</li>
 						<li>Scriptable - command line</li>
-						<li>extensive report capability</li>
+						<li>extensive reporting capability</li>
 					</ul>
 
 					<aside class="notes">
@@ -184,7 +184,7 @@
 						</li>
 						<li>Listener
 							<ul>
-								<li>Graph</li>
+								<li>Graph/Bar Chart/Table</li>
 								<li>detail sampler execution result</li>
 								<li>save result to jtl/csv/xml format</li>
 							</ul>
@@ -194,7 +194,7 @@
 						<ul>
 							<li>default format is jtl</li>
 							<li>can be converted to xml or csv format</li>
-							<li>listerner is used to capture raw result</li>
+							<li>listener is used to capture raw result</li>
 						</ul>
 					</aside>
 				</section>
@@ -321,6 +321,23 @@
 									&lt;/testResults&gt;
 								</code></pre>
 				</section>
+			</section>
+			<section>
+				<h2>JMeter HTTP(S) Test Script Recorder</h2>
+				<ul>
+					<li>proxy</li>
+					<li>custom certificate for https recording</li>
+					<li>Recorded script can used the existing defined variables</li>
+					<li>filter request</li>
+				</ul>
+				<aside class="notes">
+					<ul>
+						<li>JMeter proxy server which is used to intercept the browser requests.</li>
+						<li>A file called ApacheJMeterTemporaryRootCA.crt will be generated in jmeter/bin folder. </li>
+						<li>Install this certificate in your browser</li>
+						<li>can filter file type</li>
+					</ul>
+				</aside>
 			</section>
 			<section>
 				<section>
@@ -455,11 +472,25 @@
 				<section>
 					<h2>Run from command line</h2>
 					<code>
-						jmeter -n -t script.jmx -R 10.10.0.1,10.10.0.2,hostname3
+						jmeter -n -t [jmx file] -l [results file] -e -o [Path to output folder]
 					</code>
 
 					<aside class="notes">
-						-n means no GUI, -t specifies JMX script, -R provides remote servers
+						<ul>
+							<li>-t  [name of JMX file that contains the Test Plan].</li>
+							<li>-l  [name of JTL file to log sample results to].</li>
+							<li>-j  [name of JMeter run log file].</li>
+							<li>-r  Run the test in the servers specified by the JMeter property "<span class="code">remote_hosts</span>"</li>
+							<li>-R  [list of remote servers] Run the test in the specified remote servers</li>
+							<li>-g  [path to CSV file]&nbsp;generate report dashboard only</li>
+							<li>-e  generate report dashboard after load test</li>
+							<li>-o  output folder where to generate the report dashboard after load test. Folder must not exist or be empty</li>
+						</ul>
+						<p>The script also lets you specify the optional firewall/proxy server information:</p>
+						<ul>
+							<li>-H  [proxy server hostname or ip address]  </li>
+							<li>-P  [proxy server port]  </li>
+						</ul>
 					</aside>
 				</section>
 			</section>
@@ -514,23 +545,7 @@
 								
 								private String name;
 								private String say;
-							
-								public String getName() {
-									return name;
-								}
-							
-								public void setName(String name) {
-									this.name = name;
-								}
-							
-								public String getSay() {
-									return say;
-								}
-							
-								public void setSay(String say) {
-									this.say = say;
-								}
-							
+
 								@Override
 								public SampleResult sample(Entry e) {
 									SampleResult res = new SampleResult();
@@ -549,6 +564,21 @@
 									return res;
 								}
 							
+								public String getName() {
+									return name;
+								}
+							
+								public void setName(String name) {
+									this.name = name;
+								}
+							
+								public String getSay() {
+									return say;
+								}
+							
+								public void setSay(String say) {
+									this.say = say;
+								}
 							}
 					</code data-trim></pre>
 				</section>
@@ -563,6 +593,12 @@
 								import org.apache.jmeter.testbeans.gui.TypeEditor;
 								
 								public class SimplePluginBeanInfo extends BeanInfoSupport {
+
+									public SimplePluginBeanInfo() {
+										super(SimplePlugin.class);
+										getprop("name","guys");
+										property("say", TypeEditor.TextAreaEditor);
+									}
 								
 									private PropertyDescriptor getprop(String name, Object deflt) {
 										PropertyDescriptor p = property(name);
@@ -570,13 +606,6 @@
 										p.setValue(NOT_UNDEFINED, Boolean.TRUE);
 										return p;
 									}
-								
-									public SimplePluginBeanInfo() {
-										super(SimplePlugin.class);
-										getprop("name","guys");
-										property("say", TypeEditor.TextAreaEditor);
-									}
-								
 								}
 						</code data-trim></pre>
 				</section>
@@ -595,7 +624,10 @@
 				<br><br>
 				<h2>Contact</h2>
 				<p>
-					<a href="https://www.linkedin.com/in/firdaus-kamaruddin-53a4657a/">linkedin.com</a>
+					<a href="https://www.linkedin.com/in/firdaus-kamaruddin-53a4657a/">linkedin</a>
+				</p>
+				<p>
+					<a href="https://github.com/firdausng">github</a>
 				</p>
 				<br>
 				<p class="small">
@@ -607,8 +639,6 @@
 
 	<script src="lib/js/head.min.js"></script>
 	<script src="js/reveal.js"></script>
-	<script src="plugin/markdown/marked.js"></script>
-	<script src="plugin/markdown/markdown.js"></script>
 
 	<script>
 		// More info about config & dependencies:
@@ -620,11 +650,6 @@
 			history: true,
 			overview: false,
 			rollingLinks: false,
-			width: "100%",
-			height: "100%",
-			margin: 0,
-			minScale: 0.5,
-			maxScale: 1,
 			transition: Reveal.getQueryHash().transition || 'default',
 			dependencies: [
 				{ src: 'plugin/markdown/marked.js' },
