@@ -2,4 +2,4 @@
 
 Presentation about Jmeter in a company's sharing session
 
-https://github.com/firdausng/devmamak-jmeter-presentation
+https://firdausng.github.io/devmamak-jmeter-presentation/index.html#/
